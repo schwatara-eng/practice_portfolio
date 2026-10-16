@@ -164,6 +164,21 @@
   "app": "",
   "images": ["images/1분아사나_3부장가사나_썸네일3.png"],
   "file": ""
+},
+
+{
+  "title": "싸우지 않는 전사의 힘 🙏 비라바드라사나1번 | 1분 아사나 EP.4",
+  "category": "AI영상",
+  "course": "AI 데이터 저널리즘",
+  "date": "2026.10",
+  "tools": "ChatGPT, Pexels, Adobe Firefly, CapCut",
+  "intent": "하나의 요가 자세를 몸·호흡·마음의 관점에서 60초 안에 담아내는 1분 아사나」 시리즈의 네 번째 작품입니다. 전사 자세 1번의 힘을 내면의 의지와 연결합니다.",
+  "process": "주제 선정 및 자료 조사 → 60초 스토리보드 작성 → 스톡영상 확보 및 내레이션 구성 → AI 영상 제작 → 영상 편집 → 유튜브 쇼츠 업로드",
+  "embed": "https://www.youtube.com/embed/L83v77q4RDs",
+  "app": "",
+  "image": ["images/1분아사나_4비라바드라사나1번_썸네일.png"],
+  "file": ""
 }
+
 
 ]
