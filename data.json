@@ -102,9 +102,9 @@
     "date": "2026.10",
     "tools": "HTML, CSS, JavaScript, JSON, Open-Meteo API, BigDataCloud API, Vercel",
     "intent": "날씨와 기분에 어울리는 록 음악을 추천하고, 록 음악 뉴스와 뮤지션의 이야기를 함께 소개하는 음악 큐레이션 웹 애플리케이션입니다. 현재 위치의 날씨와 사용자가 선택한 기분을 분석해 록 음악 데이터에서 세 곡을 추천하며, 곡별 추천 이유와 YouTube·가사 링크를 제공합니다. '오늘의 뮤지션'에서는 아티스트의 음악 세계와 주요 앨범, 에디터 코멘트를 소개합니다.",
-    "process": "Opal 프로토타입 기획 → 록 음악 데이터(JSON) 구축 및 확장 → HTML·CSS·JavaScript 프론트엔드 구현 → Open-Meteo API 날씨 연동 → 위치 기반 지역명 표시 → 날씨·기분 점수 기반 추천 알고리즘 구현 → 오늘의 뉴스·오늘의 뮤지션 섹션 추가 → 뮤지션 소개 및 에디터 코멘트 콘텐츠 제작 → 반응형 UI 개선 → GitHub 연동 및 Vercel 배포",
+    "process": "Opal 프로토타입 기획 → 록 음악 데이터(JSON) 구축 및 확장 → HTML·CSS·JavaScript 프론트엔드 구현 → Open-Meteo API 날씨 및 위치 기반 지역명 연동 → 날씨·기분 점수 기반 추천 알고리즘 구현 → 뉴스 RSS 수집 및 번역 연동 → 뮤지션 소개 및 에디터 코멘트 콘텐츠 제작 → AI 팩트체크·에디토리얼 리뷰를 위한 편집실 구축 → 반응형 UI 개선 → FastAPI 기반 로컬 실행 환경 구성 및 MySQL 데이터 이전 작업",
     "embed": "",
-    "app": "https://today-rockapp.vercel.app/",
+    "app": "",
     "images": [
       "images/today-rock_썸네일.PNG"
     ]
