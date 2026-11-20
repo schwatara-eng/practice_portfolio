@@ -198,6 +198,19 @@
   "embed": "",
   "app": "https://moonlight-tarotapp.vercel.app",
   "images": ["images/moonlight-tarot-thumbnail.jpg"]
-}
-
+},
+  {
+    "title": "서울 교통안전 라이브",
+    "category": "웹앱",
+    "course": "AI 데이터 저널리즘 · 팀 프로젝트",
+    "date": "2026.11",
+    "tools": "Python, Flask, FastAPI, MySQL, OpenAI API, JavaScript, 카카오맵",
+    "intent": "서울의 고령 보행사고가 어디에 집중되고, 사고다발지역과 노인보호구역이 얼마나 겹치는지 살펴보는 데이터 저널리즘 프로젝트입니다. 공개 대시보드는 보행사고 통계와 보호구역 지도를 제공하며, 교통 전광판에는 시연용 수치를 표시합니다.",
+    "process": "서울 보행사고·인구·보호구역 자료 정제 → 자치구별 사고 비교와 지도 시각화 → FastAPI 통계 API 연결 → 로컬 기자용 뉴스룸에서 기사거리 추천, AI 초안 작성, 팩트시트 대조, 편집장 승인 흐름 구현",
+    "app": "https://seoul-traffic-newsroom-z0ffv.beigemango7.chatgpt.site/",
+    "images": [
+      "https://raw.githubusercontent.com/csycmr/team_traffic_live/main/assets/traffic-header.jpg"
+    ],
+    "file": "https://github.com/csycmr/team_traffic_live"
+  }
 ]
