@@ -209,7 +209,7 @@
     "process": "서울 보행사고·인구·보호구역 자료 정제 → 자치구별 사고 비교와 지도 시각화 → FastAPI 통계 API 연결 → 로컬 기자용 뉴스룸에서 기사거리 추천, AI 초안 작성, 팩트시트 대조, 편집장 승인 흐름 구현",
     "app": "https://seoul-traffic-newsroom-z0ffv.beigemango7.chatgpt.site/",
     "images": [
-      "https://raw.githubusercontent.com/csycmr/team_traffic_live/main/assets/traffic-header.jpg"
+      "images/seoul-traffic-live.webp"
     ],
     "file": "https://github.com/csycmr/team_traffic_live"
   }
