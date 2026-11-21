@@ -212,5 +212,18 @@
       "images/seoul-traffic-live.webp"
     ],
     "file": "https://github.com/csycmr/team_traffic_live"
+  },
+  {
+    "title": "drawing SOOBI",
+    "category": "웹사이트",
+    "course": "개인 프로젝트",
+    "date": "2026.11",
+    "tools": "HTML, CSS, JavaScript, ChatGPT Sites",
+    "intent": "소수빈을 좋아하는 친구에게 선물하려고 만든 팬아트 갤러리입니다. 폴라로이드에 담긴 그림과 짧은 글을 노래와 함께 감상할 수 있도록 구성했습니다.",
+    "process": "팬아트와 문구 정리 → 폴라로이드 콜라주와 작품 갤러리 구성 → 작품별 소개 팝업과 음악 링크 연결 → 웹사이트 배포",
+    "app": "https://drawing-soobi.beigemango7.chatgpt.site/",
+    "images": [
+      "images/drawing-soobi.webp"
+    ]
   }
 ]
