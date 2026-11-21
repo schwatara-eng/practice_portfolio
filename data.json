@@ -224,6 +224,7 @@
     "app": "https://drawing-soobi.beigemango7.chatgpt.site/",
     "images": [
       "images/drawing-soobi.webp"
-    ]
+    ],
+    "file": "https://github.com/schwatara-eng/odengsoobi"
   }
 ]
