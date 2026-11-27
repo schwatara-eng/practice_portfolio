@@ -480,7 +480,7 @@ reporterToggle.addEventListener("click", async function () {
   if (stopReporter) {
     stopReporter();
     stopReporter = undefined;
-    reporterLabel.textContent = "당최 켜기";
+    reporterLabel.textContent = "당최 아바타 켜기";
     reporterToggle.setAttribute("aria-pressed", "false");
     reporterStatus.hidden = true;
     return;
@@ -492,7 +492,7 @@ reporterToggle.addEventListener("click", async function () {
   try {
     const { startReporter } = await import("./reporter.js");
     stopReporter = await startReporter(describeNearbyWork);
-    reporterLabel.textContent = "당최 끄기";
+    reporterLabel.textContent = "당최 아바타 끄기";
     reporterToggle.setAttribute("aria-pressed", "true");
     reporterStatus.textContent = "화면의 빈 곳을 클릭해 봐.";
   } catch {

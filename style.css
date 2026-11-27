@@ -647,10 +647,9 @@ img {
 }
 
 #reporter-toggle {
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  z-index: 20;
+  align-self: flex-end;
+  margin-left: auto;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
