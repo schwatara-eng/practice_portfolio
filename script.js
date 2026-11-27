@@ -263,28 +263,6 @@ function showCards() {
       openDetail(index);
     });
 
-    if (work.title === "서울 교통안전 라이브") {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "reporter-button";
-      button.textContent = "최기자의 프로젝트 소개";
-      button.addEventListener("click", function (event) {
-        event.stopPropagation();
-        const preview = document.getElementById("reporter-preview");
-        const status = document.getElementById("reporter-status");
-        status.hidden = false;
-        status.textContent = "최기자를 불러오는 중…";
-        preview.showModal();
-        import("./reporter.js")
-          .then(function (module) {
-            return module.showReporter(preview);
-          })
-          .catch(function () {
-            status.textContent = "아바타를 불러오지 못했어요. 창을 닫고 다시 시도해 주세요.";
-          });
-      });
-      card.querySelector(".card-text").appendChild(button);
-    }
     grid.appendChild(card);
   });
 }
@@ -467,3 +445,34 @@ document.addEventListener("keydown", function (event) {
 showProfile();
 showFilters();
 showCards();
+
+
+const reporterToggle = document.getElementById("reporter-toggle");
+const reporterStatus = document.getElementById("reporter-status");
+let stopReporter;
+
+reporterToggle.addEventListener("click", async function () {
+  if (stopReporter) {
+    stopReporter();
+    stopReporter = undefined;
+    reporterToggle.textContent = "최기자 켜기";
+    reporterToggle.setAttribute("aria-pressed", "false");
+    reporterStatus.hidden = true;
+    return;
+  }
+
+  reporterToggle.disabled = true;
+  reporterStatus.hidden = false;
+  reporterStatus.textContent = "최기자를 불러오는 중…";
+  try {
+    const { startReporter } = await import("./reporter.js");
+    stopReporter = await startReporter();
+    reporterToggle.textContent = "최기자 끄기";
+    reporterToggle.setAttribute("aria-pressed", "true");
+    reporterStatus.textContent = "화면의 빈 곳을 클릭해 봐.";
+  } catch {
+    reporterStatus.textContent = "최기자를 불러오지 못했어요. 다시 시도해 주세요.";
+  } finally {
+    reporterToggle.disabled = false;
+  }
+});

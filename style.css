@@ -634,38 +634,34 @@ img {
   font-size: 13px;
   cursor: default;
 }
-.reporter-button {
-  margin-top: 0.75rem;
+#reporter-toggle,
+#reporter-status {
+  position: fixed;
+  left: 1rem;
+  z-index: 20;
   padding: 0.5rem 0.75rem;
-  border: 1px solid currentColor;
+  border: 1px solid #65594b;
   border-radius: 0.5rem;
-  background: transparent;
-  color: inherit;
+  background: #fffaf2;
+  color: #28221b;
   font: inherit;
+}
+
+#reporter-toggle {
+  bottom: 1rem;
   cursor: pointer;
 }
 
-.reporter-preview {
-  width: min(32rem, calc(100% - 2rem));
-  padding: 1rem;
+#reporter-status {
+  bottom: 3.75rem;
+  margin: 0;
+  pointer-events: none;
 }
 
-.reporter-preview form {
-  text-align: right;
-}
-
-.reporter-stage {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: min(23rem, 50vh);
-  overflow: hidden;
-  background: #e8eef2;
-  color: #17283a;
-  border-radius: 0.5rem;
-}
-
-.reporter-stage canvas {
-  position: absolute;
-  inset: 0;
+.reporter-walker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 19;
+  pointer-events: none;
 }

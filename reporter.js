@@ -22,47 +22,114 @@ async function loadReporter() {
   return vrm;
 }
 
-export async function showReporter(dialog) {
+export async function startReporter() {
   reporterPromise ??= loadReporter().catch((error) => {
     reporterPromise = undefined;
     throw error;
   });
   const vrm = await reporterPromise;
-  const stage = dialog.querySelector(".reporter-stage");
-  if (!dialog.open || stage.querySelector("canvas")) return;
-
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  const width = 112;
+  const height = 164;
+
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.domElement.setAttribute("role", "img");
-  renderer.domElement.setAttribute("aria-label", "최기자 3D 아바타");
+  renderer.setSize(width, height);
+  const canvas = renderer.domElement;
+  canvas.className = "reporter-walker";
+  canvas.setAttribute("aria-hidden", "true");
 
   const scene = new THREE.Scene();
-  scene.add(vrm.scene, new THREE.HemisphereLight(0xffffff, 0x8294a4, 2));
+  const character = new THREE.Group();
+  character.add(vrm.scene);
+  scene.add(character, new THREE.HemisphereLight(0xffffff, 0x8294a4, 2));
   const keyLight = new THREE.DirectionalLight(0xffffff, 2);
   keyLight.position.set(1, 2, 3);
   scene.add(keyLight);
 
-  const head = vrm.humanoid.getRawBoneNode("head").getWorldPosition(new THREE.Vector3());
-  const target = head.clone();
-  target.y -= 0.08;
-  const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 10);
+  const bounds = new THREE.Box3().setFromObject(vrm.scene);
+  const modelHeight = bounds.max.y - bounds.min.y;
+  const frameHeight = modelHeight * 1.16;
+  const frameWidth = frameHeight * width / height;
+  const camera = new THREE.OrthographicCamera(
+    -frameWidth / 2, frameWidth / 2, frameHeight / 2, -frameHeight / 2, 0.01, 10
+  );
+  camera.position.set(0, bounds.min.y + frameHeight * 0.48, 4);
+  camera.lookAt(0, camera.position.y, 0);
 
-  const resize = new ResizeObserver(() => {
-    camera.aspect = stage.clientWidth / stage.clientHeight;
-    const distance = 1.23 / Math.min(camera.aspect, 1);
-    camera.position.set(target.x, target.y, target.z + distance);
-    camera.lookAt(target);
-    camera.updateProjectionMatrix();
-    renderer.setSize(stage.clientWidth, stage.clientHeight);
+  const bone = (name) => vrm.humanoid.getNormalizedBoneNode(name);
+  const leftLeg = bone("leftUpperLeg");
+  const rightLeg = bone("rightUpperLeg");
+  const leftKnee = bone("leftLowerLeg");
+  const rightKnee = bone("rightLowerLeg");
+  const leftArm = bone("leftUpperArm");
+  const rightArm = bone("rightUpperArm");
+
+  const position = new THREE.Vector2(100, window.innerHeight - 18);
+  const destination = position.clone();
+  const movement = new THREE.Vector2();
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let previousTime = 0;
+  let phase = 0;
+  let facing = 0;
+
+  function clampToScreen(point) {
+    point.x = THREE.MathUtils.clamp(point.x, width / 2, window.innerWidth - width / 2);
+    point.y = THREE.MathUtils.clamp(point.y, height, window.innerHeight);
+  }
+
+  function chooseDestination(event) {
+    if (event.defaultPrevented || event.button !== 0 || event.detail === 0) return;
+    if (event.target.closest("a, button, input, select, textarea, label, dialog, .card, [role='button']")) return;
+    if (document.querySelector("dialog[open]")) return;
+
+    destination.set(event.clientX, event.clientY);
+    clampToScreen(destination);
+    if (reduceMotion.matches) position.copy(destination);
+  }
+
+  function render(time) {
+    const delta = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0;
+    previousTime = time;
+    clampToScreen(position);
+    clampToScreen(destination);
+    movement.subVectors(destination, position);
+    const distance = movement.length();
+    const step = Math.min(distance, delta * 145);
+
+    if (distance > 0.5) {
+      facing = movement.x < 0 ? -1 : 1;
+      position.addScaledVector(movement, step / distance);
+      phase += step * 0.065;
+    } else {
+      position.copy(destination);
+      phase = 0;
+    }
+
+    const swing = Math.sin(phase);
+    leftLeg.rotation.x = swing * 0.48;
+    rightLeg.rotation.x = -swing * 0.48;
+    leftKnee.rotation.x = Math.max(0, -swing) * 0.32;
+    rightKnee.rotation.x = Math.max(0, swing) * 0.32;
+    leftArm.rotation.x = -swing * 0.27;
+    rightArm.rotation.x = swing * 0.27;
+    character.rotation.y = THREE.MathUtils.lerp(
+      character.rotation.y, distance > 0.5 ? facing * 0.9 : 0, Math.min(delta * 10, 1)
+    );
+    character.position.y = Math.abs(swing) * modelHeight * 0.012;
+    vrm.update(delta);
+
+    canvas.style.transform = `translate(${position.x - width / 2}px, ${position.y - height}px)`;
     renderer.render(scene, camera);
-  });
+  }
 
-  stage.appendChild(renderer.domElement);
-  resize.observe(stage);
-  dialog.querySelector("#reporter-status").hidden = true;
-  dialog.addEventListener("close", () => {
-    resize.disconnect();
+  document.body.appendChild(canvas);
+  document.addEventListener("click", chooseDestination);
+  renderer.setAnimationLoop(render);
+
+  return () => {
+    document.removeEventListener("click", chooseDestination);
+    renderer.setAnimationLoop(null);
     renderer.dispose();
-    renderer.domElement.remove();
-  }, { once: true });
+    canvas.remove();
+  };
 }

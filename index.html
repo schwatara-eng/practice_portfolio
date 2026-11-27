@@ -151,14 +151,10 @@
   />
 </div>
 
-<dialog class="detail reporter-preview" id="reporter-preview" aria-labelledby="reporter-title">
-  <form method="dialog"><button class="reporter-button">닫기</button></form>
-  <h2 id="reporter-title">최기자의 프로젝트 소개</h2>
-  <p>서울 교통안전 라이브</p>
-  <div class="reporter-stage">
-    <p id="reporter-status" role="status"></p>
-  </div>
-</dialog>
+<button id="reporter-toggle" class="reporter-button" type="button" aria-pressed="false">
+  최기자 켜기
+</button>
+<p id="reporter-status" role="status" hidden></p>
 <script type="importmap">
   {
     "imports": {
