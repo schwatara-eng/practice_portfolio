@@ -123,7 +123,6 @@ img { display: block; max-width: 100%; }
 }
 .hero-media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .hero-media span { position: absolute; inset: auto 0 0; padding: 2rem 1rem 0.9rem; background: linear-gradient(transparent, #09120deb); }
-.intro .reporter-controls { grid-column: 1 / -1; justify-self: end; }
 .filter-button, .copy-button {
   border: 1px solid var(--선색);
   border-radius: 999px;
@@ -206,11 +205,11 @@ img { display: block; max-width: 100%; }
   .page-background-video { display: none; }
 }
 .reporter-controls {
-  position: relative;
-  align-self: flex-end;
-  margin-left: auto;
-  min-width: 0;
-  max-width: 100%;
+  position: fixed;
+  z-index: 21;
+  inset-inline-start: calc(1rem + env(safe-area-inset-left, 0px));
+  inset-block-end: calc(1rem + env(safe-area-inset-bottom, 0px));
+  padding-block-end: 1.5rem;
 }
 
 #reporter-toggle {
@@ -233,24 +232,16 @@ img { display: block; max-width: 100%; }
 
 #reporter-status {
   position: absolute;
-  inset-inline-start: calc(100% + 0.65rem);
-  top: 50%;
-  transform: translateY(-50%);
-  inline-size: 9rem;
+  inset-inline-start: 0;
+  inset-block-end: 0;
   margin: 0;
+  padding-inline: 0.35rem;
+  border-radius: 0.25rem;
+  background: #251437;
   font-size: 0.8rem;
-  overflow-wrap: anywhere;
-}
-
-@media (max-width: 1400px) {
-  #reporter-status {
-    inset-inline: auto 0;
-    top: calc(100% + 0.25rem);
-    transform: none;
-    inline-size: max-content;
-    max-inline-size: min(16rem, calc(100vw - 40px));
-    text-align: end;
-  }
+  line-height: 1.25rem;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .reporter-walker {
