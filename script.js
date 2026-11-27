@@ -211,19 +211,12 @@ function renderWorks() {
   const buttons = new Map();
   let selectedButton;
 
-  function selectWork(work, scrollToPreview = false) {
+  function selectWork(work) {
     selectedButton?.removeAttribute("aria-current");
     selectedButton = buttons.get(work);
     selectedButton.setAttribute("aria-current", "true");
     preview.replaceChildren(renderWork(work));
-
-    if (scrollToPreview) {
-      const bounds = preview.getBoundingClientRect();
-      if (bounds.top < 58 || bounds.top >= window.innerHeight) {
-        preview.scrollIntoView({ block: "start" });
-      }
-      preview.focus({ preventScroll: true });
-    }
+    preview.scrollTop = 0;
   }
 
   const sections = document.createDocumentFragment();
@@ -242,7 +235,7 @@ function renderWorks() {
       button.setAttribute("aria-controls", preview.id);
       if (work.images?.[0]) button.append(makeWorkImage(work.images[0]));
       button.append(element("span", work.title));
-      button.addEventListener("click", () => selectWork(work, true));
+      button.addEventListener("click", () => selectWork(work));
       buttons.set(work, button);
       cluster.append(button);
     }
