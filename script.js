@@ -119,16 +119,16 @@ reporterToggle.addEventListener("click", async function () {
 });
 
 const categories = [
-  { id: "journalism", label: "데이터 저널리즘", featured: "서울 교통안전 라이브" },
   { id: "video", label: "AI 영상·콘텐츠", featured: "숫자로 보는 2026 아이치·나고야 아시안 게임" },
   { id: "apps", label: "웹앱·자동화", featured: "오늘의 록 — TODAY'S ROCK" },
   { id: "publishing", label: "편집·웹 프로젝트", featured: "최미라의 출판편집 포트폴리오" },
+  { id: "journalism", label: "데이터 저널리즘", featured: "서울 교통안전 라이브" },
 ];
 
 let works = [];
 
 function categoryFor(work) {
-  if (work.title === categories[0].featured) return "journalism";
+  if (work.title === "서울 교통안전 라이브") return "journalism";
   if (work.category === "AI영상") return "video";
   if (work.category === "웹사이트") return "publishing";
   return "apps";
@@ -237,7 +237,7 @@ function renderWorks() {
     grid.append(section);
   }
 
-  const spotlight = works.find((work) => work.title === categories[0].featured);
+  const spotlight = works.find((work) => work.title === "오늘의 록 — TODAY'S ROCK");
   if (spotlight?.images?.[0]) {
     document.getElementById("hero-image").src = spotlight.images[0];
     document.getElementById("hero-caption").textContent = spotlight.title;
