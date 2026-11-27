@@ -494,7 +494,7 @@ reporterToggle.addEventListener("click", async function () {
     stopReporter = await startReporter(describeNearbyWork);
     reporterLabel.textContent = "당최 아바타 끄기";
     reporterToggle.setAttribute("aria-pressed", "true");
-    reporterStatus.textContent = "화면의 빈 곳을 클릭해 봐.";
+    reporterStatus.textContent = "화면의 빈 곳을 클릭해봐.";
   } catch {
     reporterStatus.textContent = "당최를 불러오지 못했어요. 다시 시도해 주세요.";
   } finally {

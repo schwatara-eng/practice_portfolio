@@ -635,9 +635,7 @@ img {
   cursor: default;
 }
 .reporter-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  position: relative;
   align-self: flex-end;
   margin-left: auto;
   min-width: 0;
@@ -645,7 +643,8 @@ img {
 }
 
 #reporter-toggle {
-  flex-shrink: 0;
+  min-inline-size: 10rem;
+  justify-content: center;
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
@@ -662,10 +661,26 @@ img {
 }
 
 #reporter-status {
+  position: absolute;
+  inset-inline-start: calc(100% + 0.65rem);
+  top: 50%;
+  transform: translateY(-50%);
+  inline-size: 9rem;
   margin: 0;
   color: var(--보조글자색);
   font-size: 0.8rem;
   overflow-wrap: anywhere;
+}
+
+@media (max-width: 1400px) {
+  #reporter-status {
+    inset-inline: auto 0;
+    top: calc(100% + 0.25rem);
+    transform: none;
+    inline-size: max-content;
+    max-inline-size: min(16rem, calc(100vw - 40px));
+    text-align: end;
+  }
 }
 
 .reporter-walker {
