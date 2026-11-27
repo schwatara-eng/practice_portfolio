@@ -1,23 +1,7 @@
-/* =========================================================
-   script.js — 페이지의 내용과 동작을 담당하는 파일
-
-   [1부] 내 정보와 과제 목록  ← 여기만 고치면 돼요
-   [2부] 화면을 그리는 코드   ← 공부할 때 읽어보세요
-   ========================================================= */
-
-
-/* =========================================================
-   [1부] 내 정보와 과제 목록
-   아래 내용은 모두 예시예요. 실제 내용으로 바꿔주세요.
-   ========================================================= */
-
-// ---------- 내 정보 ----------
 const PROFILE = {
   name: "최미라",
-  headline: "최미라의 포트폴리오",
   bio: "AI를 배우는 출판편집자",
   photo: "images/눈물은행 사물 - 눈물은행 통장.png",  // 프로필 사진 주소. 예: "images/me.jpg" (비우면 이름 첫 글자가 보여요)
-  tags: ["AI영상", "Opal", "웹앱", "웹사이트"],
   email: "schwatara@email.com",
 };
 
@@ -32,78 +16,9 @@ const ABOUT = [
 
 ];
 
-// ---------- 분류 (필터 버튼 이름) ----------
-// 과제의 category와 글자가 똑같아야 필터가 작동해요.
-const CATEGORIES = ["AI영상", "Opal", "웹앱", "웹사이트", "기타"];
-
-// ---------- 과제 목록 ----------
-// 새 과제를 추가하려면 { ... }, 한 덩어리를 복사해서 붙여넣고 내용을 바꾸세요.
-//
-// images: 이미지 주소 목록. 여러 장 넣으면 상세 창에서 넘겨볼 수 있어요.
-//         예: ["images/straw-1.jpg", "images/straw-2.jpg"]
-//         비워두면 [] 색상 블록이 대신 보여요.
-// file:   원본 파일(PDF, 영상 등) 링크. 없으면 "" 로 두세요.
-// process 안의 \n 은 줄바꿈이에요.
-
-let WORKS = [];
-
-fetch("data.json")
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    WORKS = data;
-        showFilters();
-    showCards();
-  });
-
-
-
-
-/* =========================================================
-   [2부] 화면을 그리는 코드
-   ========================================================= */
-
-// 지금 선택된 필터 ("전체" 로 시작)
-let selectedCategory = "전체";
-
-// 지금 화면에 보이는 과제들 (필터 적용 후)
-let visibleWorks = [];
-
-// 상세 창에서 보고 있는 과제 번호
-let currentIndex = 0;
-
-
-// ---------------------------------------------------------
-// 도우미 함수: 분류에 맞는 색 블록 색상 고르기
-// 예) "일러스트" → CATEGORIES에서 0번째 → --블록1
-// ---------------------------------------------------------
-function getBlockColor(category) {
-  const number = CATEGORIES.indexOf(category);   // 몇 번째 분류인지
-  const colorNumber = (number % 4) + 1;          // 1~4 중 하나
-  return "var(--블록" + colorNumber + ")";
-}
-
-
-// ---------------------------------------------------------
-// 도우미 함수: 이미지가 있으면 <img>, 없으면 분류 글자
-// ---------------------------------------------------------
-function makeImageHTML(work, imageNumber) {
-  const src = work.images[imageNumber];
-  if (src) {
-    return `<img src="${src}" alt="${work.title}">`;
-  }
-  return work.category;
-}
-
-
-// ---------------------------------------------------------
-// ② 자기소개, 소개, 연락처 채우기
-// ---------------------------------------------------------
 function showProfile() {
   document.getElementById("logo-name").textContent = PROFILE.name;
   document.getElementById("footer-name").textContent = PROFILE.name;
-  document.getElementById("headline").textContent = PROFILE.headline;
   document.getElementById("bio").textContent = PROFILE.bio;
 
   // 프로필 사진 (없으면 이름 첫 글자)
@@ -113,13 +28,6 @@ function showProfile() {
   } else {
     avatar.textContent = PROFILE.name[0];
   }
-
-  // 태그들
-  let tagsHTML = "";
-  for (const tag of PROFILE.tags) {
-    tagsHTML += `<span class="intro-tag">${tag}</span>`;
-  }
-  document.getElementById("intro-tags").innerHTML = tagsHTML;
 
   // 소개 섹션 (사용 툴 / 수강 과목 / 관심 분야)
   let aboutHTML = "";
@@ -139,8 +47,7 @@ function showProfile() {
   // 연락처
   document.getElementById("contact-list").innerHTML = `
     <span>이메일 ${PROFILE.email}</span>
-    <button class="copy-button" id="copy-button">복사</button>
-    <a href="${PROFILE.instagram}" target="_blank">Instagram ↗</a>`;
+    <button class="copy-button" id="copy-button">복사</button>`;
 
   // 복사 버튼 누르면 이메일 주소 복사
   const copyButton = document.getElementById("copy-button");
@@ -155,297 +62,6 @@ function showProfile() {
       });
   });
 }
-
-// ---------------------------------------------------------
-// 프로필 사진 확대 모달
-// ---------------------------------------------------------
-const avatar = document.getElementById("avatar");
-const profileModal = document.getElementById("profileModal");
-const profileModalClose = document.getElementById("profileModalClose");
-const profileModalImage = document.getElementById("profileModalImage");
-
-avatar.style.cursor = "pointer";
-
-avatar.addEventListener("click", function () {
-  if (!PROFILE.photo) return;
-
-  profileModalImage.src = PROFILE.photo;
-  profileModal.classList.add("show");
-});
-
-profileModalClose.addEventListener("click", function () {
-  profileModal.classList.remove("show");
-});
-
-profileModal.addEventListener("click", function (event) {
-  if (event.target === profileModal) {
-    profileModal.classList.remove("show");
-  }
-});
-
-// ---------------------------------------------------------
-// ③ 필터 버튼 만들기
-// ---------------------------------------------------------
-function showFilters() {
-  const allCategories = ["전체", ...CATEGORIES];  // ["전체", "일러스트", "만화", ...]
-  const filtersBox = document.getElementById("filters");
-  filtersBox.innerHTML = "";  // 먼저 비우고
-
-  for (const category of allCategories) {
-    // 이 분류에 과제가 몇 개인지 세기
-    let count = 0;
-    for (const work of WORKS) {
-      if (category === "전체" || work.category === category) {
-        count++;
-      }
-    }
-
-    // 버튼 만들기
-    const button = document.createElement("button");
-    button.className = "filter-button";
-    button.textContent = category + " " + count;
-
-    // 지금 선택된 버튼이면 active 클래스 추가 (style.css에서 색이 바뀜)
-    if (category === selectedCategory) {
-      button.classList.add("active");
-    }
-
-    // 버튼을 누르면: 선택 바꾸고 → 버튼, 카드 다시 그리기
-    button.addEventListener("click", function () {
-      selectedCategory = category;
-      showFilters();
-      showCards();
-    });
-
-    filtersBox.appendChild(button);
-  }
-}
-
-
-// ---------------------------------------------------------
-// ④ 과제 카드 만들기
-// ---------------------------------------------------------
-function showCards() {
-  // 1) 선택된 분류에 맞는 과제만 골라내기
-  visibleWorks = WORKS.filter(function (work) {
-    return selectedCategory === "전체" || work.category === selectedCategory;
-  });
-
-  document.getElementById("work-count").textContent = visibleWorks.length + "개 과제";
-
-  const grid = document.getElementById("card-grid");
-  grid.innerHTML = "";
-
-  // 2) 과제가 하나도 없을 때
-  if (visibleWorks.length === 0) {
-    grid.innerHTML = `<p class="empty-message">이 분류에는 아직 과제가 없어요.</p>`;
-    return;
-  }
-
-  // 3) 과제마다 카드 하나씩 만들기
-  visibleWorks.forEach(function (work, index) {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.dataset.workIndex = index;
-    card.innerHTML = `
-      <div class="card-image" style="background: ${getBlockColor(work.category)}">
-        ${makeImageHTML(work, 0)}
-      </div>
-      <div class="card-text">
-        <h3>${work.title}</h3>
-        <div class="card-info">
-          <span class="tag">${work.category}</span>
-          <span>${work.course} · ${work.date}</span>
-        </div>
-      </div>`;
-
-    // 카드를 누르면 상세 창 열기
-    card.addEventListener("click", function () {
-      openDetail(index);
-    });
-
-    grid.appendChild(card);
-  });
-}
-
-
-// ---------------------------------------------------------
-// ⑥ 상세 창 열기
-// ---------------------------------------------------------
-function openDetail(index) {
-  currentIndex = index;
-  const work = visibleWorks[index];
-
-  // 글자 채우기
-  document.getElementById("detail-category").textContent = work.category;
-  document.getElementById("detail-title").textContent = work.title;
-  document.getElementById("detail-course").textContent = work.course;
-  document.getElementById("detail-date").textContent = work.date;
-  document.getElementById("detail-tools").textContent = work.tools;
-  document.getElementById("detail-intent").textContent = work.intent;
-  document.getElementById("detail-process").textContent = work.process;
-
-  // 원본 파일 버튼: 링크가 있을 때만 보이기
-  const fileButton = document.getElementById("detail-file");
-  if (work.file) {
-    fileButton.href = work.file;
-    fileButton.style.display = "inline-block";
-  } else {
-    fileButton.style.display = "none";
-  }
-
-// 공개 링크가 있는 경우에만 버튼 표시
-const appButton = document.getElementById("detail-app");
-
-if (work.app && work.app !== "미공개") {
-  appButton.href = work.app;
-  appButton.textContent = work.category === "웹사이트"
-  ? "웹사이트 보기 ↗"
-  : "웹앱 보기 ↗";
-  appButton.style.display = "inline-block";
-  appButton.style.opacity = "1";
-  appButton.style.pointerEvents = "auto";
-  appButton.style.cursor = "pointer";
-} else if (work.youtube || work.embed) {
-  appButton.removeAttribute("href");
-  appButton.style.display = "none";
-} else {
-  appButton.removeAttribute("href");
-  appButton.textContent = "미공개";
-  appButton.style.display = "inline-block";
-  appButton.style.opacity = "0.45";
-  appButton.style.pointerEvents = "none";
-  appButton.style.cursor = "default";
-}
-
-  // 큰 이미지 (첫 번째 장)
-  showMainImage(0);
-
-  // 작은 이미지 목록 (2장 이상일 때만)
-  const smallBox = document.getElementById("small-images");
-  smallBox.innerHTML = "";
-  if (work.images.length > 1) {
-    work.images.forEach(function (src, imageNumber) {
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = work.title + " " + (imageNumber + 1);
-      img.addEventListener("click", function () {
-        showMainImage(imageNumber);
-      });
-      smallBox.appendChild(img);
-    });
-  }
-  markActiveSmallImage(0);
-
-  // 창 열기 (이미 열려 있으면 그대로)
-  const dialog = document.getElementById("detail");
-  if (!dialog.open) {
-    dialog.showModal();
-  }
-  dialog.scrollTop = 0;
-}
-
-
-// 상세 창의 큰 화면 바꾸기
-// embed 주소가 있으면 → 그 영상 (HeyGen, Synthesia 등)
-// youtube ID가 있으면 → 유튜브 영상
-// 둘 다 없으면 → 이미지
-function showMainImage(imageNumber) {
-  const work = visibleWorks[currentIndex];
-  const mainImage = document.getElementById("main-image");
-  mainImage.style.background = getBlockColor(work.category);
-
-  let videoAddress = "";
-  if (work.embed) {
-    videoAddress = work.embed;
-  } else if (work.youtube) {
-    videoAddress = "https://www.youtube.com/embed/" + work.youtube;
-  }
-
-  if (videoAddress) {
-    mainImage.innerHTML = `
-      <iframe
-        src="${videoAddress}"
-        title="${work.title}"
-        allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-        allowfullscreen>
-      </iframe>`;
-  } else {
-    mainImage.innerHTML = makeImageHTML(work, imageNumber);
-  }
-
-  markActiveSmallImage(imageNumber);
-}
-
-
-// 지금 보고 있는 작은 이미지에 테두리 표시
-function markActiveSmallImage(imageNumber) {
-  const smallImages = document.querySelectorAll("#small-images img");
-  smallImages.forEach(function (img, i) {
-    if (i === imageNumber) {
-      img.classList.add("active");
-    } else {
-      img.classList.remove("active");
-    }
-  });
-}
-
-
-// ---------------------------------------------------------
-// 상세 창 버튼들 (닫기, 이전, 다음)
-// ---------------------------------------------------------
-const dialog = document.getElementById("detail");
-
-// 창이 닫히면 영상을 지워서 소리도 멈추게
-dialog.addEventListener("close", function () {
-  document.getElementById("main-image").innerHTML = "";
-});
-
-// × 버튼으로 닫기
-document.getElementById("close-button").addEventListener("click", function () {
-  dialog.close();
-});
-
-// 창 바깥 어두운 부분을 눌러도 닫기
-dialog.addEventListener("click", function (event) {
-  if (event.target === dialog) {
-    dialog.close();
-  }
-});
-
-// 이전 과제 (맨 처음이면 맨 끝으로)
-document.getElementById("prev-button").addEventListener("click", function () {
-  let newIndex = currentIndex - 1;
-  if (newIndex < 0) {
-    newIndex = visibleWorks.length - 1;
-  }
-  openDetail(newIndex);
-});
-
-// 다음 과제 (맨 끝이면 맨 처음으로)
-document.getElementById("next-button").addEventListener("click", function () {
-  let newIndex = currentIndex + 1;
-  if (newIndex >= visibleWorks.length) {
-    newIndex = 0;
-  }
-  openDetail(newIndex);
-});
-
-// 키보드 ← → 로도 넘기기 (Esc는 브라우저가 알아서 닫아줘요)
-document.addEventListener("keydown", function (event) {
-  if (!dialog.open) return;
-  if (event.key === "ArrowLeft") document.getElementById("prev-button").click();
-  if (event.key === "ArrowRight") document.getElementById("next-button").click();
-});
-
-
-
-/* =========================================================
-   시작! 페이지가 열리면 아래 세 함수를 차례로 실행해요.
-   ========================================================= */
-showProfile();
-showFilters();
-showCards();
 
 
 const reporterToggle = document.getElementById("reporter-toggle");
@@ -467,7 +83,7 @@ function describeNearbyWork(x, y) {
     if (distance >= shortestDistance) return;
 
     shortestDistance = distance;
-    nearestWork = visibleWorks[Number(card.dataset.workIndex)];
+    nearestWork = works[Number(card.dataset.workIndex)];
   });
 
   if (!nearestWork) return "작품 목록 가까이를 클릭하면 과제를 소개할게요.";
@@ -501,3 +117,156 @@ reporterToggle.addEventListener("click", async function () {
     reporterToggle.disabled = false;
   }
 });
+
+const categories = [
+  { id: "journalism", label: "데이터 저널리즘", featured: "서울 교통안전 라이브" },
+  { id: "video", label: "AI 영상·콘텐츠", featured: "숫자로 보는 2026 아이치·나고야 아시안 게임" },
+  { id: "apps", label: "웹앱·자동화", featured: "오늘의 록 — TODAY'S ROCK" },
+  { id: "publishing", label: "편집·웹 프로젝트", featured: "최미라의 출판편집 포트폴리오" },
+];
+
+let works = [];
+
+function categoryFor(work) {
+  if (work.title === categories[0].featured) return "journalism";
+  if (work.category === "AI영상") return "video";
+  if (work.category === "웹사이트") return "publishing";
+  return "apps";
+}
+
+function element(tag, text, className) {
+  const node = document.createElement(tag);
+  if (text) node.textContent = text;
+  if (className) node.className = className;
+  return node;
+}
+
+function makeWorkImage(src, eager = false) {
+  const image = element("img");
+  image.src = src;
+  image.alt = "";
+  image.loading = eager ? "eager" : "lazy";
+  return image;
+}
+
+function makeWorkDetails(work) {
+  const panel = element("div", "", "work-details");
+  const media = work.youtube
+    ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(work.youtube)}`
+    : work.embed;
+
+  if (media) {
+    const video = element("iframe");
+    video.src = media;
+    video.title = work.title;
+    video.allowFullscreen = true;
+    panel.append(video);
+  }
+  for (const src of (work.images || []).slice(1)) {
+    panel.append(makeWorkImage(src));
+  }
+  if (work.process?.trim()) {
+    panel.append(element("h4", "작업 과정"), element("p", work.process));
+  }
+  if (work.features) {
+    const features = Array.isArray(work.features) ? work.features.join("\n") : work.features;
+    panel.append(element("h4", "주요 기능"), element("p", features));
+  }
+  if (work.tools) panel.append(element("p", work.tools, "work-meta"));
+
+  const links = element("div", "", "work-links");
+  for (const [label, url] of [["체험하기 ↗", work.app], ["원본 보기 ↗", work.file]]) {
+    if (!url || url === "미공개") continue;
+    const link = element("a", label);
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    links.append(link);
+  }
+  panel.append(links);
+  return panel;
+}
+
+function renderWork(work, featured = false) {
+  const article = element("article", "", featured ? "work-card featured-work" : "work-card");
+  article.dataset.workIndex = works.indexOf(work);
+  const cover = work.images?.[0];
+  if (cover) article.append(makeWorkImage(cover));
+  const copy = element("div", "", "work-copy");
+  copy.append(element("p", [work.category, work.date].filter(Boolean).join(" · "), "work-meta"));
+  copy.append(element("h3", work.title));
+  if (work.intent) copy.append(element("p", work.intent));
+
+  const details = element("details");
+  details.append(element("summary", "작품 상세"));
+  details.addEventListener("toggle", () => {
+    if (details.open) details.append(makeWorkDetails(work));
+    else details.querySelector(".work-details")?.remove();
+  });
+  copy.append(details);
+  article.append(copy);
+  return article;
+}
+
+function renderWorks() {
+  const grid = document.getElementById("card-grid");
+  const nav = document.getElementById("work-nav");
+  grid.replaceChildren();
+  const sections = [];
+
+  for (const category of categories) {
+    const group = works.filter((work) => categoryFor(work) === category.id);
+    if (group.length === 0) continue;
+
+    const section = element("section", "", "work-section");
+    section.id = category.id;
+    sections.push(section);
+    const label = element("h2", category.label);
+    section.append(label);
+
+    const link = element("a", category.label);
+    link.href = `#${category.id}`;
+    nav.append(link);
+
+    const featured = group.find((work) => work.title === category.featured) || group[0];
+    section.append(renderWork(featured, true));
+
+    const collection = element("div", "", "work-collection");
+    group.filter((work) => work !== featured).forEach((work) => collection.append(renderWork(work)));
+    if (collection.childElementCount) section.append(collection);
+    grid.append(section);
+  }
+
+  const spotlight = works.find((work) => work.title === categories[0].featured);
+  if (spotlight?.images?.[0]) {
+    document.getElementById("hero-image").src = spotlight.images[0];
+    document.getElementById("hero-caption").textContent = spotlight.title;
+    document.getElementById("hero-feature").hidden = false;
+  }
+
+  function updateNavigation() {
+    const active = sections.findLast((section) => section.getBoundingClientRect().top <= 180)
+      || sections[0];
+    for (const link of nav.children) {
+      if (active && link.hash === `#${active.id}`) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    }
+  }
+  window.addEventListener("scroll", updateNavigation, { passive: true });
+  updateNavigation();
+}
+
+showProfile();
+fetch("data.json")
+  .then((response) => {
+    if (!response.ok) throw new Error("작품 목록 요청 실패");
+    return response.json();
+  })
+  .then((data) => {
+    works = data;
+    renderWorks();
+  })
+  .catch(() => {
+    document.querySelector("#card-grid [role='status']").textContent =
+      "작품 목록을 불러오지 못했어요. 페이지를 새로고침해 주세요.";
+  });
