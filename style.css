@@ -634,21 +634,17 @@ img {
   font-size: 13px;
   cursor: default;
 }
-#reporter-status {
-  position: fixed;
-  left: 1rem;
-  z-index: 20;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #65594b;
-  border-radius: 0.5rem;
-  background: #fffaf2;
-  color: #28221b;
-  font: inherit;
+.reporter-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: flex-end;
+  margin-left: auto;
+  min-width: 0;
+  max-width: 100%;
 }
 
 #reporter-toggle {
-  align-self: flex-end;
-  margin-left: auto;
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
@@ -666,9 +662,10 @@ img {
 }
 
 #reporter-status {
-  bottom: 3.75rem;
   margin: 0;
-  pointer-events: none;
+  color: var(--보조글자색);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
 }
 
 .reporter-walker {
