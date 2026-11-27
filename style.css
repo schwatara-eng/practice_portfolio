@@ -328,7 +328,7 @@ img { display: block; max-width: 100%; }
   background: var(--카드색);
   color: var(--글자색);
   box-shadow: 0 3px 12px #0002;
-  font-size: 0.875rem;
+  font-size: 0.7rem;
   overflow-wrap: anywhere;
   pointer-events: none;
 }
