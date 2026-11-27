@@ -62,10 +62,6 @@ img { display: block; max-width: 100%; }
 .menu a { font-size: 0.9rem; text-decoration: none; }
 
 .intro {
-  display: grid;
-  grid-template-columns: 1fr 1.06fr;
-  align-items: center;
-  gap: 1.4rem clamp(1.5rem, 5vw, 4rem);
   padding-block: clamp(1.25rem, 4vw, 3.25rem) 1.125rem;
   padding-inline: clamp(1rem, 4vw, 3rem);
 }
@@ -117,7 +113,7 @@ img { display: block; max-width: 100%; }
 .intro h1 {
   margin: 0.55rem 0 0.45rem;
   font-family: KbizHanmaumMyungjo, Batang, serif;
-  font-size: min(2.75rem, 9cqi);
+  font-size: min(2.75rem, 6.1cqi);
   font-weight: 400;
   line-height: 1.35;
   letter-spacing: -0.045em;
@@ -125,25 +121,6 @@ img { display: block; max-width: 100%; }
   -webkit-text-stroke: 0.45px currentColor;
 }
 .intro-copy p { color: #f2e7ff; }
-.hero-link {
-  display: inline-block;
-  margin-top: 0.8rem;
-  border-radius: 999px;
-  padding: 0.5rem 0.95rem;
-  color: #fff;
-  background: var(--포인트색);
-  text-decoration: none;
-}
-.hero-media {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  border-radius: 0.6rem;
-  background: #17241d;
-  color: white;
-}
-.hero-media img { width: 100%; aspect-ratio: 8 / 3; object-fit: cover; object-position: top; }
-.hero-media span { position: absolute; inset: auto 0 0; padding: 2rem 1rem 0.9rem; background: linear-gradient(transparent, #09120deb); }
 .filter-button, .copy-button {
   border: 1px solid var(--선색);
   border-radius: 999px;
@@ -249,8 +226,6 @@ img { display: block; max-width: 100%; }
 .footer-inner { justify-content: space-between; }
 
 @media (max-width: 820px) {
-  .intro { grid-template-columns: 1fr; }
-  .hero-media img { aspect-ratio: 16 / 5; }
   .work-browser { grid-template-columns: minmax(0, 1fr); }
   #work-preview {
     position: static;

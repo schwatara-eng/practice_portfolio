@@ -249,16 +249,6 @@ function renderWorks() {
     return;
   }
 
-  const spotlight = works.find((work) => work.title === "오늘의 록 — TODAY'S ROCK");
-  if (spotlight?.images?.[0]) {
-    const hero = document.getElementById("hero-feature");
-    document.getElementById("hero-image").src = spotlight.images[0];
-    document.getElementById("hero-caption").textContent = spotlight.title;
-    hero.href = "#work-preview";
-    hero.hidden = false;
-    hero.addEventListener("click", () => selectWork(spotlight));
-  }
-
   const groupId = window.location.hash.slice(1);
   const group = categories.find((category) => category.id === groupId) || categories[0];
   selectWork(
