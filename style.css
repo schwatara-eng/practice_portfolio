@@ -634,7 +634,6 @@ img {
   font-size: 13px;
   cursor: default;
 }
-#reporter-toggle,
 #reporter-status {
   position: fixed;
   left: 1rem;
@@ -648,8 +647,23 @@ img {
 }
 
 #reporter-toggle {
+  position: fixed;
   bottom: 1rem;
-  cursor: pointer;
+  left: 1rem;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--카드색);
+}
+
+#reporter-toggle[aria-pressed="true"] {
+  border-color: var(--포인트색);
+}
+
+#reporter-toggle img {
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 #reporter-status {
@@ -663,5 +677,25 @@ img {
   top: 0;
   left: 0;
   z-index: 19;
+  pointer-events: none;
+}
+
+
+.reporter-bubble {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: max-content;
+  max-width: min(17rem, calc(100vw - 1rem));
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--선색);
+  border-radius: 0.85rem;
+  background: var(--카드색);
+  color: var(--글자색);
+  box-shadow: 0 3px 12px #0002;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
   pointer-events: none;
 }

@@ -22,15 +22,15 @@ async function loadReporter() {
   return vrm;
 }
 
-export async function startReporter() {
+export async function startReporter(describeNearbyWork) {
   reporterPromise ??= loadReporter().catch((error) => {
     reporterPromise = undefined;
     throw error;
   });
   const vrm = await reporterPromise;
   const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  const width = 112;
-  const height = 164;
+  const width = 130;
+  const height = 190;
 
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(width, height);
@@ -61,6 +61,7 @@ export async function startReporter() {
   const rightLeg = bone("rightUpperLeg");
   const leftKnee = bone("leftLowerLeg");
   const rightKnee = bone("rightLowerLeg");
+  const rightForearm = bone("rightLowerArm");
   const leftArm = bone("leftUpperArm");
   const rightArm = bone("rightUpperArm");
 
@@ -71,6 +72,12 @@ export async function startReporter() {
   let previousTime = 0;
   let phase = 0;
   let facing = 0;
+  let waveStart;
+  let arrivalMessage;
+  const bubble = document.createElement("p");
+  bubble.className = "reporter-bubble";
+  bubble.setAttribute("role", "status");
+  bubble.hidden = true;
 
   function clampToScreen(point) {
     point.x = THREE.MathUtils.clamp(point.x, width / 2, window.innerWidth - width / 2);
@@ -82,12 +89,15 @@ export async function startReporter() {
     if (event.target.closest("a, button, input, select, textarea, label, dialog, .card, [role='button']")) return;
     if (document.querySelector("dialog[open]")) return;
 
+    arrivalMessage = describeNearbyWork(event.clientX, event.clientY);
+    bubble.hidden = true;
     destination.set(event.clientX, event.clientY);
     clampToScreen(destination);
     if (reduceMotion.matches) position.copy(destination);
   }
 
   function render(time) {
+    waveStart ??= time;
     const delta = previousTime ? Math.min((time - previousTime) / 1000, 0.05) : 0;
     previousTime = time;
     clampToScreen(position);
@@ -105,6 +115,19 @@ export async function startReporter() {
       phase = 0;
     }
 
+    const waveTime = (time - waveStart) / 1000;
+    const wave = reduceMotion.matches ? 0 : THREE.MathUtils.clamp(
+      Math.min(waveTime * 5, (1.65 - waveTime) * 5), 0, 1
+    );
+    rightArm.rotation.z = THREE.MathUtils.lerp(1.2, -0.85, wave);
+    rightForearm.rotation.z = wave * (-0.9 + 0.38 * Math.sin(waveTime * 16));
+
+    if (arrivalMessage && position.distanceTo(destination) <= 0.5) {
+      bubble.hidden = false;
+      bubble.textContent = arrivalMessage;
+      arrivalMessage = undefined;
+    }
+
     const swing = Math.sin(phase);
     leftLeg.rotation.x = swing * 0.48;
     rightLeg.rotation.x = -swing * 0.48;
@@ -119,10 +142,18 @@ export async function startReporter() {
     vrm.update(delta);
 
     canvas.style.transform = `translate(${position.x - width / 2}px, ${position.y - height}px)`;
+    if (!bubble.hidden) {
+      const top = position.y - height;
+      const x = THREE.MathUtils.clamp(
+        position.x - bubble.offsetWidth / 2, 8, window.innerWidth - bubble.offsetWidth - 8
+      );
+      const y = Math.max(8, top - bubble.offsetHeight - 4);
+      bubble.style.transform = `translate(${x}px, ${y}px)`;
+    }
     renderer.render(scene, camera);
   }
 
-  document.body.appendChild(canvas);
+  document.body.append(canvas, bubble);
   document.addEventListener("click", chooseDestination);
   renderer.setAnimationLoop(render);
 
@@ -131,5 +162,6 @@ export async function startReporter() {
     renderer.setAnimationLoop(null);
     renderer.dispose();
     canvas.remove();
+    bubble.remove();
   };
 }

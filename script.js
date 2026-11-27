@@ -246,6 +246,7 @@ function showCards() {
   visibleWorks.forEach(function (work, index) {
     const card = document.createElement("div");
     card.className = "card";
+    card.dataset.workIndex = index;
     card.innerHTML = `
       <div class="card-image" style="background: ${getBlockColor(work.category)}">
         ${makeImageHTML(work, 0)}
@@ -449,13 +450,37 @@ showCards();
 
 const reporterToggle = document.getElementById("reporter-toggle");
 const reporterStatus = document.getElementById("reporter-status");
+const reporterLabel = reporterToggle.querySelector("span");
 let stopReporter;
+
+function describeNearbyWork(x, y) {
+  let nearestWork;
+  let shortestDistance = Infinity;
+
+  document.querySelectorAll("#card-grid [data-work-index]").forEach((card) => {
+    const rect = card.getBoundingClientRect();
+    if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+
+    const horizontalGap = Math.max(rect.left - x, x - rect.right, 0);
+    const verticalGap = Math.max(rect.top - y, y - rect.bottom, 0);
+    const distance = Math.hypot(horizontalGap, verticalGap);
+    if (distance >= shortestDistance) return;
+
+    shortestDistance = distance;
+    nearestWork = visibleWorks[Number(card.dataset.workIndex)];
+  });
+
+  if (!nearestWork) return "작품 목록 가까이를 클릭하면 과제를 소개할게요.";
+  const intent = nearestWork.intent?.trim();
+  const intro = intent || `${nearestWork.category} 과제예요.`;
+  return `「${nearestWork.title}」. ${intro}`;
+}
 
 reporterToggle.addEventListener("click", async function () {
   if (stopReporter) {
     stopReporter();
     stopReporter = undefined;
-    reporterToggle.textContent = "최기자 켜기";
+    reporterLabel.textContent = "최기자 켜기";
     reporterToggle.setAttribute("aria-pressed", "false");
     reporterStatus.hidden = true;
     return;
@@ -466,8 +491,8 @@ reporterToggle.addEventListener("click", async function () {
   reporterStatus.textContent = "최기자를 불러오는 중…";
   try {
     const { startReporter } = await import("./reporter.js");
-    stopReporter = await startReporter();
-    reporterToggle.textContent = "최기자 끄기";
+    stopReporter = await startReporter(describeNearbyWork);
+    reporterLabel.textContent = "최기자 끄기";
     reporterToggle.setAttribute("aria-pressed", "true");
     reporterStatus.textContent = "화면의 빈 곳을 클릭해 봐.";
   } catch {
