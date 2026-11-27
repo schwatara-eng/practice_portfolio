@@ -151,17 +151,6 @@ function makeWorkImage(src, eager = false) {
 
 function makeWorkDetails(work) {
   const panel = element("div", "", "work-details");
-  const media = work.youtube
-    ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(work.youtube)}`
-    : work.embed;
-
-  if (media) {
-    const video = element("iframe");
-    video.src = media;
-    video.title = work.title;
-    video.allowFullscreen = true;
-    panel.append(video);
-  }
   for (const src of (work.images || []).slice(1)) {
     panel.append(makeWorkImage(src));
   }
@@ -187,73 +176,103 @@ function makeWorkDetails(work) {
   return panel;
 }
 
-function renderWork(work, featured = false) {
-  const article = element("article", "", featured ? "work-card featured-work" : "work-card");
-  article.dataset.workIndex = works.indexOf(work);
+function renderWork(work) {
+  const article = element("article", "", "work-card");
+  const media = work.youtube
+    ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(work.youtube)}`
+    : work.embed;
+
+  if (media) {
+    const video = element("iframe");
+    video.src = media;
+    video.title = work.title;
+    video.allowFullscreen = true;
+    article.append(video);
+  }
   const cover = work.images?.[0];
-  if (cover) article.append(makeWorkImage(cover));
+  if (!media && cover) {
+    const image = makeWorkImage(cover, true);
+    image.alt = work.title;
+    article.append(image);
+  }
+
   const copy = element("div", "", "work-copy");
-  copy.append(element("p", [work.category, work.date].filter(Boolean).join(" · "), "work-meta"));
+  copy.append(element("p", [work.category, work.course, work.date].filter(Boolean).join(" · "), "work-meta"));
   copy.append(element("h3", work.title));
   if (work.intent) copy.append(element("p", work.intent));
-
-  const details = element("details");
-  details.append(element("summary", "작품 상세"));
-  details.addEventListener("toggle", () => {
-    if (details.open) details.append(makeWorkDetails(work));
-    else details.querySelector(".work-details")?.remove();
-  });
-  copy.append(details);
+  copy.append(makeWorkDetails(work));
   article.append(copy);
   return article;
 }
 
 function renderWorks() {
-  const grid = document.getElementById("card-grid");
-  const nav = document.getElementById("work-nav");
-  grid.replaceChildren();
-  const sections = [];
+  const sidebar = document.getElementById("card-grid");
+  const preview = document.getElementById("work-preview");
+  const buttons = new Map();
+  let selectedButton;
 
+  function selectWork(work, scrollToPreview = false) {
+    selectedButton?.removeAttribute("aria-current");
+    selectedButton = buttons.get(work);
+    selectedButton.setAttribute("aria-current", "true");
+    preview.replaceChildren(renderWork(work));
+
+    if (scrollToPreview) {
+      const bounds = preview.getBoundingClientRect();
+      if (bounds.top < 58 || bounds.top >= window.innerHeight) {
+        preview.scrollIntoView({ block: "start" });
+      }
+      preview.focus({ preventScroll: true });
+    }
+  }
+
+  const sections = document.createDocumentFragment();
   for (const category of categories) {
     const group = works.filter((work) => categoryFor(work) === category.id);
-    if (group.length === 0) continue;
+    if (!group.length) continue;
 
-    const section = element("section", "", "work-section");
+    const section = element("section", "", "work-group");
     section.id = category.id;
-    sections.push(section);
-    const label = element("h2", category.label);
-    section.append(label);
+    section.append(element("h3", category.label));
+    const cluster = element("div", "", "work-cluster");
+    for (const work of group) {
+      const button = element("button", "", "work-thumb");
+      button.type = "button";
+      button.dataset.workIndex = works.indexOf(work);
+      button.setAttribute("aria-controls", preview.id);
+      if (work.images?.[0]) button.append(makeWorkImage(work.images[0]));
+      button.append(element("span", work.title));
+      button.addEventListener("click", () => selectWork(work, true));
+      buttons.set(work, button);
+      cluster.append(button);
+    }
+    section.append(cluster);
+    sections.append(section);
+  }
 
-    const link = element("a", category.label);
-    link.href = `#${category.id}`;
-    nav.append(link);
-
-    const featured = group.find((work) => work.title === category.featured) || group[0];
-    section.append(renderWork(featured, true));
-
-    const collection = element("div", "", "work-collection");
-    group.filter((work) => work !== featured).forEach((work) => collection.append(renderWork(work)));
-    if (collection.childElementCount) section.append(collection);
-    grid.append(section);
+  sidebar.replaceChildren(sections);
+  if (!works.length) {
+    sidebar.append(element("p", "표시할 작품이 없어요."));
+    return;
   }
 
   const spotlight = works.find((work) => work.title === "오늘의 록 — TODAY'S ROCK");
   if (spotlight?.images?.[0]) {
+    const hero = document.getElementById("hero-feature");
     document.getElementById("hero-image").src = spotlight.images[0];
     document.getElementById("hero-caption").textContent = spotlight.title;
-    document.getElementById("hero-feature").hidden = false;
+    hero.href = "#work-preview";
+    hero.hidden = false;
+    hero.addEventListener("click", () => selectWork(spotlight));
   }
 
-  function updateNavigation() {
-    const active = sections.findLast((section) => section.getBoundingClientRect().top <= 180)
-      || sections[0];
-    for (const link of nav.children) {
-      if (active && link.hash === `#${active.id}`) link.setAttribute("aria-current", "location");
-      else link.removeAttribute("aria-current");
-    }
-  }
-  window.addEventListener("scroll", updateNavigation, { passive: true });
-  updateNavigation();
+  const groupId = window.location.hash.slice(1);
+  const group = categories.find((category) => category.id === groupId) || categories[0];
+  selectWork(
+    works.find((work) => work.title === group.featured)
+    || works.find((work) => categoryFor(work) === group.id)
+    || works[0]
+  );
 }
 
 showProfile();
