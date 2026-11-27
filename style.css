@@ -634,3 +634,38 @@ img {
   font-size: 13px;
   cursor: default;
 }
+.reporter-button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.reporter-preview {
+  width: min(32rem, calc(100% - 2rem));
+  padding: 1rem;
+}
+
+.reporter-preview form {
+  text-align: right;
+}
+
+.reporter-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: min(23rem, 50vh);
+  overflow: hidden;
+  background: #e8eef2;
+  color: #17283a;
+  border-radius: 0.5rem;
+}
+
+.reporter-stage canvas {
+  position: absolute;
+  inset: 0;
+}

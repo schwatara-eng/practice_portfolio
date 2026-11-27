@@ -263,6 +263,28 @@ function showCards() {
       openDetail(index);
     });
 
+    if (work.title === "서울 교통안전 라이브") {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "reporter-button";
+      button.textContent = "최기자의 프로젝트 소개";
+      button.addEventListener("click", function (event) {
+        event.stopPropagation();
+        const preview = document.getElementById("reporter-preview");
+        const status = document.getElementById("reporter-status");
+        status.hidden = false;
+        status.textContent = "최기자를 불러오는 중…";
+        preview.showModal();
+        import("./reporter.js")
+          .then(function (module) {
+            return module.showReporter(preview);
+          })
+          .catch(function () {
+            status.textContent = "아바타를 불러오지 못했어요. 창을 닫고 다시 시도해 주세요.";
+          });
+      });
+      card.querySelector(".card-text").appendChild(button);
+    }
     grid.appendChild(card);
   });
 }
