@@ -44,13 +44,14 @@ export async function showReporter(dialog) {
 
   const head = vrm.humanoid.getRawBoneNode("head").getWorldPosition(new THREE.Vector3());
   const target = head.clone();
-  target.y -= 0.15;
+  target.y -= 0.08;
   const camera = new THREE.PerspectiveCamera(32, 1, 0.01, 10);
-  camera.position.copy(target).add(new THREE.Vector3(0, 0, 0.95));
-  camera.lookAt(target);
 
   const resize = new ResizeObserver(() => {
     camera.aspect = stage.clientWidth / stage.clientHeight;
+    const distance = 1.23 / Math.min(camera.aspect, 1);
+    camera.position.set(target.x, target.y, target.z + distance);
+    camera.lookAt(target);
     camera.updateProjectionMatrix();
     renderer.setSize(stage.clientWidth, stage.clientHeight);
     renderer.render(scene, camera);
