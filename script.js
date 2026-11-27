@@ -480,7 +480,7 @@ reporterToggle.addEventListener("click", async function () {
   if (stopReporter) {
     stopReporter();
     stopReporter = undefined;
-    reporterLabel.textContent = "최기자 켜기";
+    reporterLabel.textContent = "당최 켜기";
     reporterToggle.setAttribute("aria-pressed", "false");
     reporterStatus.hidden = true;
     return;
@@ -488,15 +488,15 @@ reporterToggle.addEventListener("click", async function () {
 
   reporterToggle.disabled = true;
   reporterStatus.hidden = false;
-  reporterStatus.textContent = "최기자를 불러오는 중…";
+  reporterStatus.textContent = "당최를 불러오는 중…";
   try {
     const { startReporter } = await import("./reporter.js");
     stopReporter = await startReporter(describeNearbyWork);
-    reporterLabel.textContent = "최기자 끄기";
+    reporterLabel.textContent = "당최 끄기";
     reporterToggle.setAttribute("aria-pressed", "true");
     reporterStatus.textContent = "화면의 빈 곳을 클릭해 봐.";
   } catch {
-    reporterStatus.textContent = "최기자를 불러오지 못했어요. 다시 시도해 주세요.";
+    reporterStatus.textContent = "당최를 불러오지 못했어요. 다시 시도해 주세요.";
   } finally {
     reporterToggle.disabled = false;
   }
