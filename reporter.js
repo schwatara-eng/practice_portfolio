@@ -8,7 +8,7 @@ async function loadReporter() {
   const loader = new GLTFLoader();
   loader.register((parser) => new VRMLoaderPlugin(parser));
 
-  const modelURL = new URL("./models/choi_reporter.vrm", import.meta.url);
+  const modelURL = new URL("./models/dangchoe.vrm", import.meta.url);
   const { userData } = await loader.loadAsync(modelURL.href);
   const vrm = userData.vrm;
   VRMUtils.rotateVRM0(vrm);
