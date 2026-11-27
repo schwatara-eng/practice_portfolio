@@ -93,7 +93,7 @@ img { display: block; max-width: 100%; }
 
 .page-background::after {
   content: "";
-  background: linear-gradient(105deg, rgb(32 12 55 / 86%), rgb(91 40 139 / 58%));
+  background: linear-gradient(105deg, rgb(54 14 94 / 90%), rgb(108 36 172 / 75%));
 }
 .intro h1,
 #works-title,
