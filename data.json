@@ -226,5 +226,16 @@
       "images/drawing-soobi.webp"
     ],
     "file": "https://github.com/schwatara-eng/odengsoobi"
+  },
+  {
+    "title": "서울 선거 라이브",
+    "category": "데이터 저널리즘",
+    "course": "AI 데이터 저널리즘 · 팀 프로젝트 1",
+    "date": "2026.11",
+    "intent": "2026년 서울시장 선거의 개표 흐름을 재생하고, 자치구별 결과와 후보 간 격차를 지도와 차트로 살펴보는 데이터 저널리즘 프로젝트입니다. 실제 집계와 일부 시연용 데이터를 활용한 개표방송 시뮬레이션입니다.",
+    "process": "개표 자료 정리 → 타임라인·자치구 지도·득표율 차트 구현 → 기사 초안 작성·팩트체크·승인 흐름 구성 → 보도실 연동",
+    "tools": "Python, FastAPI, JavaScript, Railway",
+    "app": "https://team-election-newsroom-production.up.railway.app/",
+    "file": "https://github.com/csycmr/team-election-newsroom"
   }
 ]

@@ -128,7 +128,7 @@ const categories = [
 let works = [];
 
 function categoryFor(work) {
-  if (work.title === "서울 교통안전 라이브") return "journalism";
+  if (work.category === "데이터 저널리즘" || work.title === "서울 교통안전 라이브") return "journalism";
   if (work.category === "AI영상") return "video";
   if (work.category === "웹사이트") return "publishing";
   return "apps";
