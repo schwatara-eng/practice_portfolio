@@ -236,6 +236,7 @@
     "process": "개표 자료 정리 → 타임라인·자치구 지도·득표율 차트 구현 → 기사 초안 작성·팩트체크·승인 흐름 구성 → 보도실 연동",
     "tools": "Python, FastAPI, JavaScript, Railway",
     "app": "https://team-election-newsroom-production.up.railway.app/",
+    "images": ["images/seoul-election-live.png"],
     "file": "https://github.com/csycmr/team-election-newsroom"
   }
 ]
